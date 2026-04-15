@@ -1,12 +1,13 @@
 package com.itheima.service.impl;
 
 import com.itheima.mapper.EmpMapper;
+import com.itheima.mapper.StudentMapper;
 import com.itheima.pojo.JobOption;
 import com.itheima.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private EmpMapper empMapper;
+    @Autowired
+    private StudentMapper studentMapper;
 
     @Override
     public JobOption getEmpJobData() {
@@ -31,5 +34,29 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<Map<String, Object>> getEmpGenderData() {
         return empMapper.countEmpGenderData();
+    }
+
+    @Override
+    public List<Map<String, Object>> getStuDegreeData() {
+        return studentMapper.countStuDegreeData();
+    }
+
+    @Override
+    public List<Map<String, Object>> getStuGenderData() {
+        return studentMapper.countStuGenderData();
+    }
+
+    @Override
+    public Map<String, Object> getStuCountData() {
+        List<Map<String, Object>> list = studentMapper.countStuClazzData();
+        List<Object> clazzList = list.stream().map(dataMap -> dataMap.get("name")).toList();
+        List<Object> dataList = list.stream().map(dataMap -> dataMap.get("value")).toList();
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("clazzList", clazzList);
+        resultMap.put("dataList", dataList);
+        // 兼容可能复用员工统计字段名的前端实现
+        resultMap.put("jobList", clazzList);
+        return resultMap;
     }
 }

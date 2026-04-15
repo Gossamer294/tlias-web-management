@@ -50,4 +50,38 @@
         select s.id, s.name, s.no, s.clazz_id as clazzId, s.gender, s.phone, s.id_card as idCard, s.is_college as isCollege, s.address, s.degree, s.graduation_date as graduationDate, s.violation_count as violationCount, s.violation_score as violationScore, s.create_time as createTime, s.update_time as updateTime, c.name as clazzName from student s left join clazz c on s.clazz_id = c.id
         order by s.update_time desc
     </select>
+
+    <!--统计学员学历人数-->
+    <select id="countStuDegreeData" resultType="java.util.Map">
+        select
+            (case when degree = 1 then '初中'
+                  when degree = 2 then '高中'
+                  when degree = 3 then '大专'
+                  when degree = 4 then '本科'
+                  when degree = 5 then '硕士'
+                  when degree = 6 then '博士'
+                  else '其他' end) name,
+            count(*) value
+        from student group by degree order by value
+    </select>
+
+    <!--统计学员性别人数-->
+    <select id="countStuGenderData" resultType="java.util.Map">
+        select
+            if(gender = 1, '男性学员', '女性学员') name,
+            count(*) value
+        from student group by gender
+    </select>
+
+    <!--统计各班级学员人数-->
+    <select id="countStuClazzData" resultType="java.util.Map">
+        select
+            c.name name,
+            count(s.id) value
+        from student s
+        left join clazz c on c.id = s.clazz_id
+        where c.name is not null and c.name != ''
+        group by c.id, c.name
+        order by value, c.id
+    </select>
 </mapper>

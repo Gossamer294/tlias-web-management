@@ -39,4 +39,44 @@ public class ReportController {
         List<Map<String, Object>> genderList = reportService.getEmpGenderData();
         return Result.success(genderList);
     }
+
+    /**
+     * 统计学员学历人数
+     */
+    @GetMapping("/stuDegreeData")
+    public Result getStuDegreeData(){
+        log.info("统计学员学历人数");
+        List<Map<String, Object>> degreeList = reportService.getStuDegreeData();
+        return Result.success(degreeList);
+    }
+
+    /**
+     * 统计学员学历人数（兼容前端接口名）
+     */
+    @GetMapping("/studentDegreeData")
+    public Result getStudentDegreeData(){
+        log.info("统计学员学历人数(兼容接口)");
+        List<Map<String, Object>> degreeList = reportService.getStuDegreeData();
+        return Result.success(degreeList);
+    }
+
+    /**
+     * 统计学员性别人数
+     */
+    @GetMapping("/stuGenderData")
+    public Result getStuGenderData(){
+        log.info("统计学员性别人数");
+        List<Map<String, Object>> genderList = reportService.getStuGenderData();
+        return Result.success(genderList);
+    }
+
+    /**
+     * 统计学员人数（兼容前端接口名，返回学员性别统计）
+     */
+    @GetMapping("/studentCountData")
+    public Result getStudentCountData(){
+        log.info("统计学员人数(兼容接口)");
+        Map<String, Object> stuCountData = reportService.getStuCountData();
+        return Result.success(stuCountData);
+    }
 }

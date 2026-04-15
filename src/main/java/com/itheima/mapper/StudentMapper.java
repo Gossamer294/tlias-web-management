@@ -5,6 +5,7 @@ import com.itheima.pojo.StudentQueryParam;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface StudentMapper {
@@ -45,4 +46,22 @@ public interface StudentMapper {
      * 查询所有学生
      */
     List<Student> findAll();
+
+    /**
+     * 统计学员学历人数
+     */
+    @MapKey("name")
+    List<Map<String, Object>> countStuDegreeData();
+
+    /**
+     * 统计学员性别人数
+     */
+    @MapKey("name")
+    List<Map<String, Object>> countStuGenderData();
+
+    /**
+     * 统计各班级学员人数
+     */
+    @MapKey("name")
+    List<Map<String, Object>> countStuClazzData();
 }
