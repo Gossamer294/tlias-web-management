@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.StudentMapper">
+    <!--分页查询学生数据-->
+    <select id="page" resultType="com.itheima.pojo.Student">
+        select s.id, s.name, s.no, s.clazz_id as clazzId, s.gender, s.phone, s.id_card as idCard, s.is_college as isCollege, s.address, s.degree, s.graduation_date as graduationDate, s.violation_count as violationCount, s.violation_score as violationScore, s.create_time as createTime, s.update_time as updateTime, c.name as clazzName from student s left join clazz c on s.clazz_id = c.id
+        <where>
+            <if test="name != null and name != ''">
+                s.name like concat('%',#{name},'%')
+            </if>
+            <if test="degree != null">
+                and s.degree = #{degree}
+            </if>
+            <if test="clazzId != null">
+                and s.clazz_id = #{clazzId}
+            </if>
+        </where>
+        order by s.update_time desc
+        limit #{start}, #{pageSize}
+    </select>
+
+    <!--查询学生总数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from student s left join clazz c on s.clazz_id = c.id
+        <where>
+            <if test="name != null and name != ''">
+                s.name like concat('%',#{name},'%')
+            </if>
+            <if test="degree != null">
+                and s.degree = #{degree}
+            </if>
+            <if test="clazzId != null">
+                and s.clazz_id = #{clazzId}
+            </if>
+        </where>
+    </select>
+
+    <!--批量删除学生-->
+    <delete id="delete">
+        delete from student where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查询所有学生-->
+    <select id="findAll" resultType="com.itheima.pojo.Student">
+        select s.id, s.name, s.no, s.clazz_id as clazzId, s.gender, s.phone, s.id_card as idCard, s.is_college as isCollege, s.address, s.degree, s.graduation_date as graduationDate, s.violation_count as violationCount, s.violation_score as violationScore, s.create_time as createTime, s.update_time as updateTime, c.name as clazzName from student s left join clazz c on s.clazz_id = c.id
+        order by s.update_time desc
+    </select>
+</mapper>

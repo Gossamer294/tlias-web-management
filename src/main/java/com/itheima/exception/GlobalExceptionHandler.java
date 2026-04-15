@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public Result handleException(Exception e){
         log.error("程序出错啦~", e);
-        return Result.error("出错啦, 请联系管理员~");
+        return Result.error("出错啦, 请联系管理员~" + e.getMessage());
     }
 
     @ExceptionHandler

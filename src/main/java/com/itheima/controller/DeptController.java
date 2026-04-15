@@ -28,6 +28,16 @@ public class DeptController {
     }
 
     /**
+     * 查询所有部门（用于列表展示）
+     */
+    @GetMapping("/list")
+    public Result listAll(){
+        log.info("查询所有部门列表");
+        List<Dept> deptList = deptService.findAll();
+        return Result.success(deptList);
+    }
+
+    /**
      * 删除部门 - 省略@RequestParam (前端传递的请求参数名与服务端方法形参名一致) [推荐]
      */
     @DeleteMapping
@@ -52,9 +62,19 @@ public class DeptController {
     /**
      * 根据ID查询部门
      */
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Result getInfo(@PathVariable Integer id){
         //System.out.println("根据ID查询部门 : " + id);
+        log.info("根据ID查询部门: {}", id);
+        Dept dept = deptService.getById(id);
+        return Result.success(dept);
+    }
+
+    /**
+     * 根据ID查询部门（兼容前端路径）
+     */
+    @GetMapping("/{id}")
+    public Result getInfoById(@PathVariable Integer id){
         log.info("根据ID查询部门: {}", id);
         Dept dept = deptService.getById(id);
         return Result.success(dept);

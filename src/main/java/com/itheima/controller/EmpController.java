@@ -66,9 +66,19 @@ public class EmpController {
     }
 
     /**
+     * 查询所有员工（用于列表展示）
+     */
+    @GetMapping("/list")
+    public Result list(){
+        log.info("查询所有员工列表");
+        List<Emp> empList = empService.findAll();
+        return Result.success(empList);
+    }
+
+    /**
      * 根据ID查询员工信息
      */
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Result getInfo(@PathVariable Integer id){
         log.info("根据ID查询员工信息: {}", id);
         Emp emp = empService.getInfo(id);
