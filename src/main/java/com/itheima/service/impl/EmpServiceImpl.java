@@ -7,6 +7,8 @@ import com.itheima.mapper.EmpMapper;
 import com.itheima.pojo.*;
 import com.itheima.service.EmpLogService;
 import com.itheima.service.EmpService;
+import com.itheima.utils.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +17,11 @@ import org.springframework.util.CollectionUtils;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Service
 public class EmpServiceImpl implements EmpService {
 
@@ -26,6 +31,7 @@ public class EmpServiceImpl implements EmpService {
     private EmpExprMapper empExprMapper;
     @Autowired
     private EmpLogService empLogService;
+
 
     @Override
     public PageResult<Emp> page(EmpQueryParam empQueryParam) {
@@ -97,6 +103,23 @@ public class EmpServiceImpl implements EmpService {
             exprList.forEach(empExpr -> empExpr.setEmpId(emp.getId()));
             empExprMapper.insertBatch(exprList);
         }
+    }
+//登录
+    @Override
+    public LoginInfo login(Emp loginInfo) {
+        log.info("登录信息:{}", loginInfo);
+       Emp b= empMapper.selectByUsernameAndPassword(loginInfo);
+       if(b!=null){
+           log.info("登录成功");
+           //生成JWT令牌
+           Map<String,Object> claims = new HashMap<>();
+           claims.put("id",b.getId());
+           claims.put("username",b.getUsername());
+           String jwt =JwtUtils.generateJwt(claims);
+           return new LoginInfo(b.getId(),b.getUsername(),b.getName(),jwt);
+
+       }
+       return null;
     }
 
     @Override
