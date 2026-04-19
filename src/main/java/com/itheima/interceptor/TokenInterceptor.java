@@ -1,30 +1,24 @@
-package com.itheima.filter;
+package com.itheima.interceptor;
 
 import com.itheima.utils.JwtUtils;
-import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 @Slf4j
-//@WebFilter(urlPatterns = "/*")
-public class TokenFilter implements Filter {
-
-
+@Component
+public class TokenInterceptor implements HandlerInterceptor {
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         //获取请求路径
         String requestURI = request.getRequestURI();
         //判断路径是否是登录请求
         if(requestURI.equals("/login")){
             log.info("登录请求");
-            filterChain.doFilter(request,response);
-            return;
+
+            return  true;
         }
         //获取请求头中的token
         String token = request.getHeader("token");
@@ -32,7 +26,7 @@ public class TokenFilter implements Filter {
         if(token == null || token.equals("")){
             log.info("令牌为空");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            return false;
         }
         //存在，则进行校验，校验失败返回401错误信息
         try {
@@ -40,12 +34,11 @@ public class TokenFilter implements Filter {
         } catch (Exception e) {
             log.info("令牌非法");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            return false;
         }
         //验证成功，放行
         log.info("令牌合法");
-        filterChain.doFilter(request,response);
+        return true;
     }
-
-
 }
+
